@@ -9,8 +9,6 @@ HELM=helm --kubeconfig=$(KUBECONFIG)
 MAKE=make
 NAMESPACE=triton
 
-
-
 # temporary
 # CI_ENVIRONMENT_NAME=test
 
