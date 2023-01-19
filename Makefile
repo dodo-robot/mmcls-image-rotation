@@ -1,6 +1,5 @@
 SHELL=/bin/bash
 
-KUBECONFIG=
 KUBECTL=kubectl --kubeconfig=$(KUBECONFIG)
 HELM=helm --kubeconfig=$(KUBECONFIG)
 MAKE=make
