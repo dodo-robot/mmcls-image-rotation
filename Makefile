@@ -24,8 +24,10 @@ get_minio_pod:
 	$(KUBECTL) describe pods -n ${NAMESPACE} | grep Name.*minio | awk 'NR==1 {print $$2}'
 	
 deploy_models_to_minio:
-	$(KUBECTL) exec -it $(MINIO)  -n ${NAMESPACE} -c minio -- /bin/bash -c "mkdir -p altilia_models"
-	$(KUBECTL) cp model/$(MODEL_NAME) $(MINIO):/opt/bitnami/minio-client/altilia_models/  -n ${NAMESPACE} -c minio
-	$(KUBECTL) exec -it $(MINIO) -n ${NAMESPACE} -c minio -- /bin/bash -c "mc config host add minio http://localhost:9000 Altilia.2021 Altilia.2021"
-	$(KUBECTL) exec -it $(MINIO) -n ${NAMESPACE} -c minio -- /bin/bash -c "mc cp --recursive /opt/bitnami/minio-client/altilia_models/ minio/triton/"
-	$(KUBECTL) exec -it $(MINIO) -n ${NAMESPACE} -c minio -- /bin/bash -c "rm -rf /opt/bitnami/minio-client/altilia_models"
+	minio = eval $(MINIO)
+	model_name = eval $(MODEL_NAME)
+	$(KUBECTL) exec -it  $$minio -n ${NAMESPACE} -c minio -- /bin/bash -c "mkdir -p altilia_models"
+	$(KUBECTL) cp model/$$model_name $$minio:/opt/bitnami/minio-client/altilia_models/  -n ${NAMESPACE} -c minio
+	$(KUBECTL) exec -it $$minio -n ${NAMESPACE} -c minio -- /bin/bash -c "mc config host add minio http://localhost:9000 Altilia.2021 Altilia.2021"
+	$(KUBECTL) exec -it $$minio -n ${NAMESPACE} -c minio -- /bin/bash -c "mc cp --recursive /opt/bitnami/minio-client/altilia_models/ minio/triton/"
+	$(KUBECTL) exec -it $$minio -n ${NAMESPACE} -c minio -- /bin/bash -c "rm -rf /opt/bitnami/minio-client/altilia_models"
