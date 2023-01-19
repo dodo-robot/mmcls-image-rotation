@@ -40,18 +40,37 @@ pipeline {
         }
 
         stage("GET MINIO POD NAME") {
+            when {
+                anyOf {
+                    branch 'dev'
+                }
+            }
              steps {
-               tmp_param =  sh (script: 'make KUBECONFIG=$KUBECONFIG get_minio_pod', returnStdout: true).trim()
-               env.MINIO = tmp_param
-               echo "${MINIO}"
+                script {
+                    env.MINIO = sh (
+                            script: 'make KUBECONFIG=$KUBECONFIG get_minio_pod',
+                            returnStdout: true
+                        ).trim()
+                    echo "${MINIO}"
+                } 
+               
               }
         }
 
         stage("GET MODEL NAME") {
+            when {
+                anyOf {
+                    branch 'dev'
+                }
+            }
              steps {
-               tmp_param =  sh (script: 'make KUBECONFIG=$KUBECONFIG get_model_name', returnStdout: true).trim()
-               env.MODEL_NAME = tmp_param
-               echo "${MODEL_NAME}"
+                script {
+                    env.MODEL_NAME = sh (
+                            script: 'make KUBECONFIG=$KUBECONFIG get_model_name',
+                            returnStdout: true
+                        ).trim()
+                    echo "${MODEL_NAME}"
+                } 
               }
         }
 
@@ -61,15 +80,9 @@ pipeline {
                     branch 'dev'
                 }
             }
-            environment {
-               
-            }
             
             steps {
-                
                 sh ('make KUBECONFIG=$KUBECONFIG MODEL_NAME=$MODEL_NAME MINIO=$MINIO deploy_models_to_minio')
-                
-                
             }  
         }
 
