@@ -1,0 +1,78 @@
+{
+   "name": "ImageOrientationClassifier",
+   "platform": "onnxruntime_onnx",
+   "max_batch_size": 8,
+   "dynamic_batching": {
+      "preferred_batch_size": [
+         2,
+         4,
+         8
+      ],
+      "max_queue_delay_microseconds": 100000
+   },
+   "input": [
+      {
+         "name": "input",
+         "data_type": "TYPE_FP32",
+         "dims": [
+            3,
+            -1,
+            -1
+         ]
+      }
+   ],
+   "output": [
+      {
+         "name": "output",
+         "data_type": "TYPE_FP32",
+         "dims": [
+             4
+         ]
+      }
+   ],
+   "parameters": {
+      "key": "labels",
+      "labels": {
+         "string_value": "0_CLOCKWISE,180_CLOCKWISE,270_CLOCKWISE,90_CLOCKWISE"
+      }
+   },
+   "preprocess_pipeline": [
+    {
+        "type": "Resize",
+        "size": [
+            256,
+            -1
+        ]
+    },
+    {
+        "type": "CenterCrop",
+        "crop_size": 224
+    },
+    {
+        "type": "Normalize",
+        "mean": [
+            125.307,
+            122.961,
+            113.8575
+        ],
+        "std": [
+            51.5865,
+            50.847,
+            51.255
+        ],
+        "to_rgb": true
+    },
+    {
+        "type": "ImageToTensor",
+        "keys": [
+            "img"
+        ]
+    },
+    {
+        "type": "Collect",
+        "keys": [
+            "img"
+        ]
+    }
+]
+}
