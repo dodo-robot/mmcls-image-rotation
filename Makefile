@@ -6,7 +6,6 @@ HELM=helm --kubeconfig=$(KUBECONFIG)
 MAKE=make
 NAMESPACE=triton
 
-CHART_NAME=${PROJECT_NAME} 
 MODEL_NAME=$(MODEL_NAME)
 MINIO=$(MINIO)
 # temporary
