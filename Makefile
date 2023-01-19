@@ -22,7 +22,6 @@ get_model_name:
 
 get_minio_pod:
 	$(KUBECTL) describe pods -n ${NAMESPACE} | grep Name.*minio | awk 'NR==1 {print $$2}' 
- 
 	
 deploy_models_to_minio:
 	$(KUBECTL) exec -it $(MINIO)  -n ${NAMESPACE} -c minio -- /bin/bash -c "mkdir -p altilia_models"
