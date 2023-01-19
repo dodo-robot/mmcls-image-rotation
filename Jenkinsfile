@@ -62,7 +62,7 @@ pipeline {
                         returnStdout: true
                     ).trim()
                     
-                    sh ('make KUBECONFIG=$KUBECONFIG MODEL_NAME="${MODEL_NAME}" MINIO="${MINIO}" deploy_models_to_minio')
+                    sh ('make KUBECONFIG=$KUBECONFIG MODEL_NAME=echo "${MODEL_NAME}" MINIO=echo "${MINIO}" deploy_models_to_minio')
                 }
                 
                 
