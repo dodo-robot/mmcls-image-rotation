@@ -35,7 +35,7 @@ pipeline {
             }
         }
 
-        stage('Load Model To Minio') {
+        stage('Load Model To Pod') {
             when {
                 anyOf {
                     branch 'dev'
@@ -60,9 +60,9 @@ pipeline {
                     ).trim()
                     echo "${MODEL_NAME}"
                 }
-                sh ('make KUBECONFIG=$KUBECONFIG MINIO="${MINIO}" MODEL_NAME="${MODEL_NAME}" CI_ENVIRONMENT_NAME="${BRANCH_NAME}" load_model_to_pod')
-                sh ('make KUBECONFIG=$KUBECONFIG MINIO="${MINIO}" MODEL_NAME="${MODEL_NAME}" CI_ENVIRONMENT_NAME="${BRANCH_NAME}" deploy_models_to_minio')
-                sh ('make KUBECONFIG=$KUBECONFIG MINIO="${MINIO}" MODEL_NAME="${MODEL_NAME}" CI_ENVIRONMENT_NAME="${BRANCH_NAME}" delete_model_from_pod')
+                sh ('make KUBECONFIG=$KUBECONFIG MINIO=$MINIO MODEL_NAME=$MODEL_NAME CI_ENVIRONMENT_NAME=$BRANCH_NAME load_model_to_pod')
+                sh ('make KUBECONFIG=$KUBECONFIG MINIO=$MINIO MODEL_NAME=$MODEL_NAME CI_ENVIRONMENT_NAME=$BRANCH_NAME deploy_models_to_minio')
+                sh ('make KUBECONFIG=$KUBECONFIG MINIO=$MINIO MODEL_NAME=$MODEL_NAME CI_ENVIRONMENT_NAME=$BRANCH_NAME delete_model_from_pod')
                 
             } 
             // post {
@@ -70,6 +70,65 @@ pipeline {
             //         sh ('make KUBECONFIG=$KUBECONFIG CI_ENVIRONMENT_NAME="${BRANCH_NAME}" delete_model_from_pod')
             //     }
             // }
+        }
+
+        stage('Load Model To Triton Bucket') {
+            when {
+                anyOf {
+                    branch 'dev'
+                }
+            }
+            environment {
+               KUBECONFIG = credentials('kubeconfig-altiliaia-dev')
+            }
+            
+            steps {
+                script {
+                    env.MINIO = sh (
+                        script: 'make get_minio_pod',
+                        returnStdout: true
+                    ).trim()
+                    echo "${MINIO}"
+                }
+                script {
+                    env.MODEL_NAME = sh (
+                        script: 'make get_model_name',
+                        returnStdout: true
+                    ).trim()
+                    echo "${MODEL_NAME}"
+                }
+                sh ('make KUBECONFIG=$KUBECONFIG MINIO=$MINIO MODEL_NAME=$MODEL_NAME CI_ENVIRONMENT_NAME=$BRANCH_NAME deploy_models_to_minio')
+                sh ('make KUBECONFIG=$KUBECONFIG MINIO=$MINIO MODEL_NAME=$MODEL_NAME CI_ENVIRONMENT_NAME=$BRANCH_NAME delete_model_from_pod')
+                
+            } 
+            stage('Delete Model From Pod') {
+            when {
+                anyOf {
+                    branch 'dev'
+                }
+            }
+            environment {
+               KUBECONFIG = credentials('kubeconfig-altiliaia-dev')
+            }
+            
+            steps {
+                script {
+                    env.MINIO = sh (
+                        script: 'make get_minio_pod',
+                        returnStdout: true
+                    ).trim()
+                    echo "${MINIO}"
+                }
+                script {
+                    env.MODEL_NAME = sh (
+                        script: 'make get_model_name',
+                        returnStdout: true
+                    ).trim()
+                    echo "${MODEL_NAME}"
+                }
+                sh ('make KUBECONFIG=$KUBECONFIG MINIO=$MINIO MODEL_NAME=$MODEL_NAME CI_ENVIRONMENT_NAME=$BRANCH_NAME delete_model_from_pod')
+                
+            } 
         }
         
 
