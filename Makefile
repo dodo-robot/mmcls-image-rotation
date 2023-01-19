@@ -19,8 +19,8 @@ help:
 
 	
 deploy_models_to_minio:
-	minio = $(ls model  | awk 'NR==1 {print $$1}')
-	model_name = $($(KUBECTL) describe pods -n ${NAMESPACE} | grep Name.*minio | awk 'NR==1 {print $$2}')
+	minio=ls model  | awk 'NR==1 {print $$1}'
+	model_name=$(KUBECTL) describe pods -n ${NAMESPACE} | grep Name.*minio | awk 'NR==1 {print $$2}'
 	$(KUBECTL) exec -it $(minio)  -n ${NAMESPACE} -c minio -- /bin/bash -c "mkdir -p altilia_models"
 	$(KUBECTL) cp model/$(model_name) $(MINIO):/opt/bitnami/minio-client/altilia_models/  -n ${NAMESPACE} -c minio
 	$(KUBECTL) exec -it $(minio) -n ${NAMESPACE} -c minio -- /bin/bash -c "mc config host add minio http://localhost:9000 Altilia.2021 Altilia.2021"

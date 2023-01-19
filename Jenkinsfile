@@ -52,7 +52,7 @@ pipeline {
             }
             
             steps {
-                sh ('make KUBECONFIG=$KUBECONFIG MODEL_NAME=$MODEL_NAME MINIO=$MINIO deploy_models_to_minio')
+                sh ('make KUBECONFIG=$KUBECONFIG deploy_models_to_minio')
             }  
         }
 
