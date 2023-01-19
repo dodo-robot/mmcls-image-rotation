@@ -20,13 +20,10 @@ get_minio_pod:
 
 load_model_to_pod: 
 	$(KUBECTL) exec -it $(MINIO)  -n ${NAMESPACE} -c minio -- /bin/bash -c "mkdir -p altilia_models"
-	$(KUBECTL)
 
-deploy_models_to_minio:
-	$(MAKE) load_model_to_pod 
+deploy_models_to_minio: 
 	$(KUBECTL) exec -it $(MINIO) -n ${NAMESPACE} -c minio -- /bin/bash -c "mc config host add minio http://localhost:9000 Altilia.2021 Altilia.2021"
 	$(KUBECTL) exec -it $(MINIO) -n ${NAMESPACE} -c minio -- /bin/bash -c "mc cp --recursive /opt/bitnami/minio-client/altilia_models/ minio/triton/"
-	$(MAKE) delete_model_from_pod 
 
 delete_model_from_pod: 
 	$(KUBECTL) exec -it $(MINIO) -n ${NAMESPACE} -c minio -- /bin/bash -c "rm -rf /opt/bitnami/minio-client/altilia_models"
