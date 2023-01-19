@@ -48,7 +48,7 @@ pipeline {
              steps {
                 script {
                     env.MINIO = sh (
-                            script: 'make KUBECONFIG=$KUBECONFIG get_minio_pod',
+                            script: 'ls model  | awk \'NR==1 {print $$1}\'',
                             returnStdout: true
                         ).trim()
                     echo "${MINIO}"
@@ -69,7 +69,7 @@ pipeline {
                             script: 'make KUBECONFIG=$KUBECONFIG get_model_name',
                             returnStdout: true
                         ).trim()
-                    echo "${MODEL_NAME}"
+                    ${MODEL_NAME} | awk 'NR==1 {print $1}'
                 } 
               }
         }
