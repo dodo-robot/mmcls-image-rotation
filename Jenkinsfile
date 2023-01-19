@@ -9,9 +9,7 @@ pipeline {
 
     environment {
         GIT_LFS_SKIP_SMUDGE = 1
-        CHART_REPO = "${env.altilia_ia_chart_repo}"
-        CHART_REPO_CRED = credentials('altilia-chart-repo-cred')
-        CHART_REPO_SUBPATH = 'infra'
+        KUBECONFIG = credentials('kubeconfig-altiliaia-dev')
         PROJECT_NAME = env.JOB_NAME.tokenize('/').get(1)
     }
 
@@ -45,6 +43,7 @@ pipeline {
              steps {
                tmp_param =  sh (script: 'make KUBECONFIG=$KUBECONFIG get_minio_pod', returnStdout: true).trim()
                env.MINIO = tmp_param
+               echo "${MINIO}"
               }
         }
 
@@ -52,6 +51,7 @@ pipeline {
              steps {
                tmp_param =  sh (script: 'make KUBECONFIG=$KUBECONFIG get_model_name', returnStdout: true).trim()
                env.MODEL_NAME = tmp_param
+               echo "${MODEL_NAME}"
               }
         }
 
@@ -62,7 +62,7 @@ pipeline {
                 }
             }
             environment {
-               KUBECONFIG = credentials('kubeconfig-altiliaia-dev')
+               
             }
             
             steps {
