@@ -4,9 +4,6 @@ pipeline {
 
     environment {
         GIT_LFS_SKIP_SMUDGE = 1
-        CHART_REPO = "${env.altilia_ia_chart_repo}"
-        CHART_REPO_CRED = credentials('altilia-chart-repo-cred')
-        CHART_REPO_SUBPATH = 'infra'
         PROJECT_NAME = env.JOB_NAME.tokenize('/').get(1)
     }
 
@@ -35,44 +32,6 @@ pipeline {
                 // Install all tools
                 sh ('sudo apt-get update && sudo apt-get install -y kubectl helm yq')
                 sh ('sudo apt update && sudo apt install software-properties-common')
-            }
-        }
-
-
-
-
-        stage('Load Model To Minio') {
-            when {
-                anyOf {
-                    branch 'dev'
-                }
-            }
-            environment {
-               KUBECONFIG = credentials('kubeconfig-altiliaia-dev')
-            }
-            
-            steps {
-                script {
-                    env.MINIO = sh (
-                        script: 'make get_minio_pod',
-                        returnStdout: true
-                    ).trim()
-                    echo "${MINIO}"
-                }
-                script {
-                    env.MODEL_NAME = sh (
-                        script: 'make get_model_name',
-                        returnStdout: true
-                    ).trim()
-                    echo "${MODEL_NAME}"
-                }
-                sh ('make KUBECONFIG=$KUBECONFIG MINIO="${MINIO}" MODEL_NAME="${MODEL_NAME}" CI_ENVIRONMENT_NAME="${BRANCH_NAME}" deploy_models_to_minio')
-                
-            } 
-            post {
-                always {
-                    sh ('make KUBECONFIG=$KUBECONFIG CI_ENVIRONMENT_NAME="${BRANCH_NAME}" delete_model_from_pod')
-                }
             }
         }
 
