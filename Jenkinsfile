@@ -1,9 +1,9 @@
+def minio = ""
+def model_name = ""
+    
 pipeline {
 
     agent any
-
-    def minio = ""
-    def model_name = ""
 
     environment {
         GIT_LFS_SKIP_SMUDGE = 1
