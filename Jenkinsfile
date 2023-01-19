@@ -28,11 +28,8 @@ pipeline {
                 // get kubectl
                 sh ('sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg')
                 sh ('echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list')
-               
-                // get yq
-                sh ('sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys CC86BB64 && sudo add-apt-repository ppa:rmescandon/yq')
                 // Install all tools
-                sh ('sudo apt-get update && sudo apt-get install -y kubectl yq')
+                sh ('sudo apt-get update && sudo apt-get install -y kubectl')
                 sh ('sudo apt update && sudo apt install software-properties-common')
             }
         }
@@ -68,8 +65,8 @@ pipeline {
                             script: 'make KUBECONFIG=$KUBECONFIG get_model_name',
                             returnStdout: true
                         ).trim()
-                    echo ${MODEL_NAME} 
-                    model_name=${MODEL_NAME} 
+                    echo "${MODEL_NAME}"
+                    model_name="${MODEL_NAME}"
                 } 
               }
         }
