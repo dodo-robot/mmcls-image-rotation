@@ -3,6 +3,7 @@ pipeline {
     agent any
 
     environment {
+        GIT_LFS_SKIP_SMUDGE = 1
         CHART_REPO = "${env.altilia_ia_chart_repo}"
         CHART_REPO_CRED = credentials('altilia-chart-repo-cred')
         CHART_REPO_SUBPATH = 'infra'
