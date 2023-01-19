@@ -66,14 +66,9 @@ pipeline {
                     ).trim()
                     echo "${MODEL_NAME}"
                 }
-                sh ('make deploy_models_to_minio')
+                sh ('make KUBECONFIG=$KUBECONFIG MODEL_NAME=$MODEL_NAME MINIO=$MINIO deploy_models_to_minio')
                 
-            } 
-            post {
-                always {
-                    sh ('make KUBECONFIG=$KUBECONFIG CI_ENVIRONMENT_NAME="${BRANCH_NAME}" delete_model_from_pod')
-                }
-            }
+            }  
         }
 
     }
