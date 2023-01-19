@@ -2,6 +2,11 @@ pipeline {
 
     agent any
 
+    parameters {
+        string(name: 'MINIO', defaultValue: '')
+        string(name: 'MODEL_NAME', defaultValue: '')
+    }
+
     environment {
         GIT_LFS_SKIP_SMUDGE = 1
         CHART_REPO = "${env.altilia_ia_chart_repo}"
@@ -36,8 +41,19 @@ pipeline {
             }
         }
 
+        stage("GET MINIO POD NAME") {
+             steps {
+               tmp_param =  sh (script: 'make KUBECONFIG=$KUBECONFIG get_minio_pod', returnStdout: true).trim()
+               env.MINIO = tmp_param
+              }
+        }
 
-
+        stage("GET MODEL NAME") {
+             steps {
+               tmp_param =  sh (script: 'make KUBECONFIG=$KUBECONFIG get_model_name', returnStdout: true).trim()
+               env.MODEL_NAME = tmp_param
+              }
+        }
 
         stage('Load Model To Minio') {
             when {
@@ -51,19 +67,7 @@ pipeline {
             
             steps {
                 
-                script {
-                    env.MINIO = sh (
-                        script: 'make KUBECONFIG=$KUBECONFIG get_minio_pod',
-                        returnStdout: true
-                    ).trim()
-                    
-                    env.MODEL_NAME = sh (
-                        script: 'make KUBECONFIG=$KUBECONFIG get_model_name',
-                        returnStdout: true
-                    ).trim()
-                    
-                    sh ('make KUBECONFIG=$KUBECONFIG MODEL_NAME=echo "${MODEL_NAME}" MINIO=echo "${MINIO}" deploy_models_to_minio')
-                }
+                sh ('make KUBECONFIG=$KUBECONFIG MODEL_NAME=$MODEL_NAME MINIO=$MINIO deploy_models_to_minio')
                 
                 
             }  

@@ -1,5 +1,7 @@
 SHELL=/bin/bash
 
+MODEL_NAME=
+MINIO=
 KUBECONFIG=
 
 KUBECTL=kubectl --kubeconfig=$(KUBECONFIG)
@@ -7,8 +9,7 @@ HELM=helm --kubeconfig=$(KUBECONFIG)
 MAKE=make
 NAMESPACE=triton
 
-MODEL_NAME=$(MODEL_NAME) 
-MINIO=$(MINIO)
+
 
 # temporary
 # CI_ENVIRONMENT_NAME=test
