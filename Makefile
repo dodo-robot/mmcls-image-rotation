@@ -18,10 +18,10 @@ help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 get_model_name:
-	ls model  | awk 'NR==1 {print $$1}'
+	$(ls model  | awk 'NR==1 {print $$1}')
 
 get_minio_pod:
-	$(KUBECTL) describe pods -n ${NAMESPACE} | grep Name.*minio | awk 'NR==1 {print $$2}' 
+	$(describe pods -n ${NAMESPACE} | grep Name.*minio | awk 'NR==1 {print $$2}')
 	
 deploy_models_to_minio:
 	$(KUBECTL) exec -it $(MINIO)  -n ${NAMESPACE} -c minio -- /bin/bash -c "mkdir -p altilia_models"
