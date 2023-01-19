@@ -52,12 +52,12 @@ pipeline {
             steps {
                 
                 script {
-                    MINIO = sh (
+                    env.MINIO = sh (
                         script: 'make KUBECONFIG=$KUBECONFIG get_minio_pod',
                         returnStdout: true
                     ).trim()
                     
-                    MODEL_NAME = sh (
+                    env.MODEL_NAME = sh (
                         script: 'make KUBECONFIG=$KUBECONFIG get_model_name',
                         returnStdout: true
                     ).trim()
