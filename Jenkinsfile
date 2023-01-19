@@ -54,14 +54,14 @@ pipeline {
             steps {
                 script {
                     env.MINIO = sh (
-                        script: 'make get_minio_pod',
+                        script: 'make KUBECONFIG=$KUBECONFIG get_minio_pod',
                         returnStdout: true
                     ).trim()
                     echo "${MINIO}"
                 }
                 script {
                     env.MODEL_NAME = sh (
-                        script: 'make get_model_name',
+                        script: 'make KUBECONFIG=$KUBECONFIG get_model_name',
                         returnStdout: true
                     ).trim()
                     echo "${MODEL_NAME}"
