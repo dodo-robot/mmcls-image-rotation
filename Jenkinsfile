@@ -66,7 +66,7 @@ pipeline {
                     ).trim()
                     echo "${MODEL_NAME}"
                 }
-                sh ('make KUBECONFIG=$KUBECONFIG MINIO="${MINIO}" MODEL_NAME="${MODEL_NAME}" CI_ENVIRONMENT_NAME="${BRANCH_NAME}" deploy_models_to_minio')
+                sh ('make deploy_models_to_minio')
                 
             } 
             post {
