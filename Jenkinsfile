@@ -79,9 +79,11 @@ pipeline {
             }
             
             steps {
-                env.MODEL_NAME=model_name
-                env.MINIO=minio
-                sh ('make KUBECONFIG=$KUBECONFIG MODEL_NAME=${MODEL_NAME} MINIO=${MINIO} deploy_models_to_minio')
+                script {
+                    env.MODEL_NAME=model_name
+                    env.MINIO=minio
+                    sh ('make KUBECONFIG=$KUBECONFIG MODEL_NAME=${MODEL_NAME} MINIO=${MINIO} deploy_models_to_minio')
+                }
             }  
         }
 
