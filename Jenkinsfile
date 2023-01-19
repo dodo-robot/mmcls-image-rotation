@@ -27,6 +27,7 @@ pipeline {
                 // get kubectl
                 sh ('sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg')
                 sh ('echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list')
+               
                 // get yq
                 sh ('sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys CC86BB64 && sudo add-apt-repository ppa:rmescandon/yq')
                 // Install all tools
@@ -46,10 +47,27 @@ pipeline {
             }
             environment {
                KUBECONFIG = credentials('kubeconfig-altiliaia-dev')
+               MODEL_NAME = ''
+               MINIO = ''
             }
             
             steps {
-                sh ('make KUBECONFIG=$KUBECONFIG deploy_models_to_minio')
+                
+                script {
+                    env.MINIO = sh (
+                        script: 'make KUBECONFIG=$KUBECONFIG get_minio_pod',
+                        returnStdout: true
+                    ).trim()
+                    echo "${MINIO}"
+                    env.MODEL_NAME = sh (
+                        script: 'make KUBECONFIG=$KUBECONFIG get_model_name',
+                        returnStdout: true
+                    ).trim()
+                    echo "${MODEL_NAME}"
+                    sh ('make KUBECONFIG=$KUBECONFIG MODEL_NAME=$MODEL_NAME MINIO=$MINIO deploy_models_to_minio')
+                }
+                
+                
             }  
         }
 
