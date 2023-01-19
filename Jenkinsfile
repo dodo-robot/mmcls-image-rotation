@@ -47,8 +47,6 @@ pipeline {
             }
             environment {
                KUBECONFIG = credentials('kubeconfig-altiliaia-dev')
-               MODEL_NAME = ''
-               MINIO = ''
             }
             
             steps {
