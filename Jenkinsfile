@@ -47,7 +47,6 @@ pipeline {
                             returnStdout: true
                         ).trim()
                     echo "${MINIO}"
-                    minio = "${MINIO}"
                 } 
                
               }
@@ -66,7 +65,6 @@ pipeline {
                             returnStdout: true
                         ).trim()
                     echo "${MODEL_NAME}"
-                    model_name="${MODEL_NAME}"
                 } 
               }
         }
@@ -82,7 +80,7 @@ pipeline {
                 script {
                     env.MODEL_NAME=model_name
                     env.MINIO=minio
-                    sh ('make KUBECONFIG=$KUBECONFIG MODEL_NAME=${MODEL_NAME} MINIO=${MINIO} deploy_models_to_minio')
+                    sh ('make KUBECONFIG=$KUBECONFIG deploy_models_to_minio')
                 }
             }  
         }
